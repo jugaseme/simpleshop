@@ -12,29 +12,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Configuración de CORS
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.CLIENT_URL
-].filter(Boolean);
-
+// Configuración de CORS universal (admite Vercel, localhost, dominio propio y móviles)
 app.use(cors({
-  origin: (origin, callback) => {
-    // Permitir solicitudes sin origin (Postman, apps móviles, health checks)
-    if (!origin) return callback(null, true);
-
-    // Permitir dominios listados, subdominios de Vercel o en desarrollo
-    const isAllowed =
-      allowedOrigins.includes(origin) ||
-      origin.endsWith('.vercel.app') ||
-      process.env.NODE_ENV !== 'production';
-
-    if (isAllowed) {
-      return callback(null, true);
-    }
-    return callback(new Error(`Bloqueado por política CORS: ${origin}`));
-  },
+  origin: true,
   credentials: true
 }));
 
