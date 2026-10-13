@@ -21,11 +21,19 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origin (como Postman o apps móviles) o si coincide con los permitidos
-    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+    // Permitir solicitudes sin origin (Postman, apps móviles, health checks)
+    if (!origin) return callback(null, true);
+
+    // Permitir dominios listados, subdominios de Vercel o en desarrollo
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      process.env.NODE_ENV !== 'production';
+
+    if (isAllowed) {
       return callback(null, true);
     }
-    return callback(new Error('Bloqueado por política CORS'));
+    return callback(new Error(`Bloqueado por política CORS: ${origin}`));
   },
   credentials: true
 }));
