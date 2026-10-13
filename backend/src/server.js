@@ -40,6 +40,23 @@ app.use(cors({
 
 app.use(express.json());
 
+// Ruta raíz con información del servicio
+app.get('/', (req, res) => {
+  res.json({
+    name: 'ShopSimple API',
+    version: '1.0.0',
+    status: 'online',
+    message: 'Bienvenido a la API REST de ShopSimple E-commerce',
+    endpoints: {
+      health: '/api/health',
+      products: '/api/products',
+      categories: '/api/products/categories',
+      auth: '/api/auth',
+      orders: '/api/orders'
+    }
+  });
+});
+
 // Verificación de estado del servidor (Health check)
 app.get('/api/health', (req, res) => {
   res.json({
